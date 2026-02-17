@@ -6,9 +6,11 @@
 
 **Student ID:** 2423029
 
-**User Guide Link:**
+**User Guide Link:** [here](https://github.com/princessbleach/discord-sound-bot/blob/main/UserManual.md)
 
-**Video Demonstration Link:**
+**Developer Guide Link:** [here](https://github.com/princessbleach/discord-sound-bot/blob/main/DeveloperManual.Md)
+
+**Video Demonstration Link:** [here](https://github.com/princessbleach/discord-sound-bot/blob/main/audiobotdemonstration.mov)
 
 ---
 
