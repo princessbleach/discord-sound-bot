@@ -1,4 +1,22 @@
-# Audio Upload Standards  (for musicians)
+# User Guide
+
+
+1. Type **/submit_audio** in this channel.
+
+2. Fill in the form:
+
+   * **Contributor** → your name 
+   * **Category** → SFX, Foley, Voice Acting, or Composition
+   * **File** → upload a **.wav** file
+   * **Title of File** → clear asset name (refer to naming conventions in #documents)
+   * **Notes** → optional context or description
+
+3. Press **Enter** to submit.
+
+You’ll see a confirmation message when it’s done 
+
+
+##  Audio Upload Standards  (for musicians)
 
 
 **Format**
