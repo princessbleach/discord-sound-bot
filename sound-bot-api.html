@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discord Sound Upload Bot — API Specification</title>
+  <style>
+    :root{
+      --bg:#0b0d12; --panel:#121726; --text:#e8eaf0; --muted:#a8b0c2;
+      --accent:#8aa6ff; --border:#232a3d; --code:#0f1422;
+    }
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:var(--bg); color:var(--text); line-height:1.55;
+    }
+    header{
+      padding:32px 20px; border-bottom:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(138,166,255,0.15), rgba(0,0,0,0));
+    }
+    .wrap{ max-width:980px; margin:0 auto; padding:0 20px; }
+    h1{ margin:0 0 8px; font-size:28px; letter-spacing:.2px; }
+    .sub{ color:var(--muted); margin:0; }
+    main{ padding:28px 0 60px; }
+    section{
+      background:var(--panel); border:1px solid var(--border);
+      border-radius:14px; padding:18px; margin:14px 0;
+      box-shadow:0 8px 24px rgba(0,0,0,.25);
+    }
+    h2{ margin:0 0 10px; font-size:18px; }
+    h3{ margin:18px 0 8px; font-size:16px; color:var(--accent); }
+    p, li{ color:var(--text); }
+    .muted{ color:var(--muted); }
+    code, pre{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    pre{
+      background:var(--code); border:1px solid var(--border);
+      padding:12px; border-radius:12px; overflow:auto; margin:10px 0;
+    }
+    .pill{
+      display:inline-block; padding:2px 10px; border-radius:999px;
+      background:rgba(138,166,255,0.12); border:1px solid rgba(138,166,255,0.35);
+      color:var(--accent); font-size:12px; margin-right:8px;
+    }
+    table{
+      width:100%; border-collapse:collapse; margin:10px 0;
+      border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    }
+    th, td{
+      text-align:left; padding:10px; border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+    th{ background:rgba(255,255,255,0.03); font-weight:600; }
+    tr:last-child td{ border-bottom:none; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Discord Sound Upload Bot — API Specification</h1>
+      <p class="sub">API-style interface definition for an audio submission bot that validates WAV files and commits them into a Git repo.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <section>
+      <h2>1) Overview</h2>
+      <p>
+        The Discord Sound Upload Bot allows contributors (musicians/sound designers) to submit audio assets through Discord.
+        The bot validates uploads (file type/size), normalises naming, routes files into the correct project folder
+        (e.g., SFX/Foley/Voice Acting/Composition), then commits and pushes changes to a Git repository.
+      </p>
+      <p class="muted">
+        Note: In the current prototype, these calls can be internal Python functions (no web server required). This document
+        defines a stable interface/contract that could later be exposed as REST endpoints for dashboards or automation.
+      </p>
+    </section>
+
+    <section>
+      <h2>2) API Surface</h2>
+      <p class="muted">Base URL shown for documentation purposes: <code>https://api.example.com/v1</code></p>
+
+      <table>
+        <thead>
+          <tr><th>Method</th><th>Endpoint</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill">POST</span></td>
+            <td><code>/submissions</code></td>
+            <td>Create a new audio submission (metadata + file reference).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">GET</span></td>
+            <td><code>/submissions</code></td>
+            <td>List/search submissions (by user, category, status).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">GET</span></td>
+            <td><code>/submissions/{submissionId}</code></td>
+            <td>Retrieve full submission details (validation + git status).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">POST</span></td>
+            <td><code>/submissions/{submissionId}/validate</code></td>
+            <td>Validate file rules (extension, max size, optional sample rate/bit depth checks).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">POST</span></td>
+            <td><code>/submissions/{submissionId}/stage</code></td>
+            <td>Route file into correct repo folder and stage git changes.</td>
+          </tr>
+          <tr>
+            <td><span class="pill">POST</span></td>
+            <td><code>/submissions/{submissionId}/commit</code></td>
+            <td>Commit changes with a standardised message (includes metadata).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">POST</span></td>
+            <td><code>/submissions/{submissionId}/push</code></td>
+            <td>Push commit to remote (supports auth + failure handling).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">GET</span></td>
+            <td><code>/meta/categories</code></td>
+            <td>Allowed submission categories (SFX/Foley/Voice Acting/Composition).</td>
+          </tr>
+          <tr>
+            <td><span class="pill">GET</span></td>
+            <td><code>/health</code></td>
+            <td>Service health check.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>3) Usage Example</h2>
+      <p><strong>Scenario:</strong> User uploads <code>.wav</code> in Discord → bot validates → routes → commits → pushes.</p>
+
+      <pre><code>[Discord Contributor]
+   | uploads file + selects category
+   v
+[Bot] -- POST /submissions ----------------------> [Submission Store]
+   |<-- submissionId ----------------------------|
+   |
+   |-- POST /submissions/{id}/validate ----------> [Validator]
+   |<-- OK / errors -----------------------------|
+   |
+   |-- POST /submissions/{id}/stage -------------> [Repo Router + Git Stage]
+   |<-- staged paths ----------------------------|
+   |
+   |-- POST /submissions/{id}/commit ------------> [Git Commit]
+   |<-- commit hash -----------------------------|
+   |
+   |-- POST /submissions/{id}/push --------------> [Git Remote]
+   |<-- pushed / rejected / auth error ----------|</code></pre>
+
+      <h3>Example: Create Submission</h3>
+      <p><span class="pill">POST</span><code>/submissions</code></p>
+
+      <pre><code>{
+  "source": "discord",
+  "guildId": "123456789012345678",
+  "channelId": "222233334444555566",
+  "uploaderUserId": "998877665544332211",
+  "category": "SFX",
+  "assetName": "Footstep_Snow",
+  "description": "Snow footstep variations, 6 takes, close-mic.",
+  "file": {
+    "url": "https://cdn.discordapp.com/attachments/.../FootstepSnow.wav",
+    "filename": "FootstepSnow.wav",
+    "sizeBytes": 8423912
+  }
+}</code></pre>
+
+      <p class="muted">Response (201 Created)</p>
+      <pre><code>{
+  "submissionId": "s_2c91aa",
+  "status": "RECEIVED",
+  "createdAt": "2026-03-04T13:10:00Z"
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>4) API Reference</h2>
+
+      <h3>Create Submission</h3>
+      <p><span class="pill">POST</span><code>/submissions</code> — Registers a new audio submission with metadata and file reference.</p>
+
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>guildId</code></td><td>string</td><td>Yes</td><td>Discord server ID scope.</td></tr>
+          <tr><td><code>uploaderUserId</code></td><td>string</td><td>Yes</td><td>Discord user ID of uploader.</td></tr>
+          <tr><td><code>category</code></td><td>string</td><td>Yes</td><td>One of: SFX, Foley, Voice Acting, Composition.</td></tr>
+          <tr><td><code>assetName</code></td><td>string</td><td>Yes</td><td>Human-friendly name used for slugging/file naming.</td></tr>
+          <tr><td><code>description</code></td><td>string</td><td>No</td><td>Optional notes for implementers.</td></tr>
+          <tr><td><code>file.url</code></td><td>string</td><td>Yes</td><td>Discord CDN URL or uploaded blob URL.</td></tr>
+          <tr><td><code>file.filename</code></td><td>string</td><td>Yes</td><td>Original file name from uploader.</td></tr>
+          <tr><td><code>file.sizeBytes</code></td><td>int</td><td>No</td><td>Used for max-size validation (e.g., 25MB).</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Returns</strong></p>
+      <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>submissionId</code></td><td>string</td><td>Unique ID for tracking this upload pipeline.</td></tr>
+          <tr><td><code>status</code></td><td>string</td><td>Pipeline status: RECEIVED/VALIDATED/STAGED/COMMITTED/PUSHED/FAILED.</td></tr>
+          <tr><td><code>createdAt</code></td><td>string</td><td>Creation time (ISO-8601).</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Errors / Failure cases</strong></p>
+      <ul>
+        <li><code>400 Bad Request</code> — missing category/assetName/file data.</li>
+        <li><code>413 Payload Too Large</code> — file exceeds max allowed size.</li>
+        <li><code>415 Unsupported Media Type</code> — extension not allowed (only .wav).</li>
+        <li><code>429 Too Many Requests</code> — spam/rate limiting (burst uploads).</li>
+        <li><code>500 Internal Server Error</code> — storage failure.</li>
+      </ul>
+
+      <h3>Validate Submission</h3>
+      <p><span class="pill">POST</span><code>/submissions/{submissionId}/validate</code> — Validates file rules and records results.</p>
+
+      <p class="muted">Typical checks (depending on implementation):</p>
+      <ul>
+        <li>Extension is <code>.wav</code></li>
+        <li>Size &lt;= 25MB</li>
+        <li>Optional: sample rate/bit depth (e.g., 48kHz/24-bit) via FFmpeg/metadata</li>
+      </ul>
+
+      <p><strong>Errors</strong></p>
+      <ul>
+        <li><code>415</code> unsupported file type</li>
+        <li><code>422 Unprocessable Entity</code> corrupted/invalid WAV</li>
+        <li><code>504 Gateway Timeout</code> metadata tool/FFmpeg timed out</li>
+      </ul>
+
+      <h3>Stage / Commit / Push</h3>
+      <p><span class="pill">POST</span><code>/submissions/{submissionId}/stage</code> — Moves file into correct repo folder and stages changes.</p>
+      <p><span class="pill">POST</span><code>/submissions/{submissionId}/commit</code> — Creates a commit with standard message format.</p>
+      <p><span class="pill">POST</span><code>/submissions/{submissionId}/push</code> — Pushes to remote repository.</p>
+
+      <p class="muted"><strong>Common git-related failure cases:</strong></p>
+      <ul>
+        <li><code>401 Unauthorized</code> — missing/invalid Git credential (token/SSH).</li>
+        <li><code>409 Conflict</code> — remote changed; requires pull/rebase or retry.</li>
+        <li><code>423 Locked</code> — repo locked / cannot write (permissions).</li>
+        <li><code>500</code> — git command failed (non-zero exit) or repo path misconfigured.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5) Notes (Implementation Mapping)</h2>
+      <ul>
+        <li><strong>Discord layer:</strong> commands/modals collect <code>category</code> + file upload URL.</li>
+        <li><strong>Validation:</strong> extension/size checks; optional audio metadata checks.</li>
+        <li><strong>Routing:</strong> maps categories to repo folders (e.g., DropOff/Sound/Sfx).</li>
+        <li><strong>Version control:</strong> commits create a traceable audit history for assets.</li>
+        <li><strong>Future:</strong> expose the interface as REST to support a dashboard or automated QA validation.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6) Standard Error Format (Optional)</h2>
+      <pre><code>{
+  "error": {
+    "code": "UNSUPPORTED_MEDIA_TYPE",
+    "message": "Only .wav files are accepted",
+    "requestId": "req_123"
+  }
+}</code></pre>
+    </section>
+
+    <section>
+      <h2>7) Health</h2>
+      <p><span class="pill">GET</span><code>/health</code> — basic status check.</p>
+      <pre><code>{
+  "ok": true,
+  "time": "2026-03-04T13:05:00Z"
+}</code></pre>
+    </section>
+
+  </main>
+</body>
+</html>
