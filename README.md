@@ -12,7 +12,7 @@
 
 **Video Demonstration Link:** [here](https://raw.githubusercontent.com/princessbleach/Zoe-GPs-Writeup/refs/heads/main/SoundUploadDemonstration.gif?token=GHSAT0AAAAAADZIUT7HXDOKYQGL73ORULBQ2OL7DRQ)
 
-**Api:** [here](https://github.com/princessbleach/discord-sound-bot/blob/main/sound-bot-api.html)
+**Api:** [here](https://raw.githubusercontent.com/princessbleach/Zoe-GPs-Writeup/refs/heads/main/Images/SoundUploadDemonstration.gif)
 
 ---
 
