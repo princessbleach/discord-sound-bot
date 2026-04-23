@@ -18,7 +18,7 @@
 
 ## Abstract
 
-This project explores the design and implementation of an automated audio submission pipeline for a game development workflow using Discord, Git, and Unreal Engine–compatible audio standards. The primary goal was to streamline how musicians upload sound assets while ensuring files meet technical, structural, and mastering requirements suitable for real-time game audio.
+This project explores the design and implementation of an automated audio submission pipeline for a game development workflow using Discord (2024), Git (2024), and Unreal Engine (Epic Games, 2024) –compatible audio standards. The primary goal was to streamline how musicians upload sound assets while ensuring files meet technical, structural, and mastering requirements suitable for real-time game audio.
 
 The system integrates a Discord slash-command bot that validates uploaded WAV files, structures metadata, and commits assets directly to a shared GitHub repository. Alongside the technical tool, a set of game-appropriate mastering and naming conventions was researched and defined to maintain consistency, performance, and mix clarity inside Unreal Engine.
 
@@ -26,12 +26,10 @@ The system integrates a Discord slash-command bot that validates uploaded WAV fi
 
 ## Research 
 
-### What sources or references have you identified as relevant to this task?
-
-Research focused on three intersecting areas:
+Research focused on three areas:
 
 * **Game audio technical standards** (sample rate, loudness philosophy, asset preparation)
-* **Industry middleware and engine workflows** (Unreal, Wwise, FMOD)
+* **Industry middleware and engine workflows** 
 * **Practical collaboration pipelines** (Git, automation, Discord integration)
 
 The research directly informed:
@@ -61,9 +59,9 @@ From this research, I created a short document on how to use this tool (to be re
 
 ## Implementation 
 
-### What was your development process and how did decisions evolve?
+### Development Process
 
-Development began with defining the core problem: musicians who are untrained in Git needed a pathway to submit audio assets. Early ideation explored manual Git uploads, but this proved error-prone and inconsistent.
+Development began with defining the core problem: musicians are untrained in Git but still need an easy way to upload assets straight to the project. 
 
 The solution evolved into a Discord-based automation system:
 
@@ -74,19 +72,9 @@ The solution evolved into a Discord-based automation system:
 
 ---
 
-### What creative or technical methods did you try?
-
-* Discord automation as a studio pipeline tool
-* Git-based asset ingestion rather than cloud storage
-* Applying interactive audio mastering philosophy instead of music streaming norms
-
-
-
----
 
 ## Testing 
 
-### What testing methods did you use?
 
 Testing combined:
 
@@ -118,7 +106,7 @@ Testing confirmed the system successfully:
 
 ## Critical Reflection 
 
-### What went well?
+### +
 
 * Successful creation of a **fully automated audio pipeline**
 * Alignment with **real game-audio workflow philosophy**
@@ -128,7 +116,7 @@ The project exceeded expectations by moving beyond theory into a **practical stu
 
 ---
 
-### What could be improved or done differently next time?
+### -
 
 Future improvements could include:
 
@@ -143,18 +131,29 @@ Future improvements could include:
 ## Bibliography
 
 Epic Games (2024) *Unreal Engine Audio Documentation*.
+
 Audiokinetic (2023) *Wwise Documentation*.
+
 FMOD (2023) *FMOD Studio User Guide*.
 
+Discord (2024) Discord. Available at: https://discord.com/ 
+
+GitHub (2024) GitHub. Available at: https://github.com/ 
+
+Python (2024) Python. Available at: https://www.python.org/ 
+
+Ubuntu (2024) Ubuntu. Available at: https://ubuntu.com/
+
+Unreal Engine (2024) Unreal Engine. Available at: https://www.unrealengine.com/
+
+### AI Declaration
+
+- This task utilised AI tools to support aspects of development and documentation.
+- AI assistance was used in the following ways:
+- Supporting debugging and problem-solving during development of the Discord bot
+- Assisting with code structure and implementation using Python and discord.py
+- Helping structure and refine sections of this written report
+
+
 ---
 
-## Declared Assets
-
-The following elements were created or modified with AI assistance:
-
-* Discord bot structural code
-* Audio standards documentation wording
-* Academic write-up formatting
-
-
----
