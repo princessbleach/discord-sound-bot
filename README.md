@@ -10,7 +10,7 @@
 
 **Developer Guide Link:** [here](https://github.com/princessbleach/discord-sound-bot/blob/main/DeveloperManual.Md)
 
-**Video Demonstration Link:** [here](https://raw.githubusercontent.com/princessbleach/Zoe-GPs-Writeup/refs/heads/main/SoundUploadDemonstration.gif?token=GHSAT0AAAAAADZIUT7HXDOKYQGL73ORULBQ2OL7DRQ)
+**Video Demonstration Link:** [here](https://raw.githubusercontent.com/princessbleach/Zoe-GPs-Writeup/refs/heads/main/Images/SoundUploadDemonstration.gif)
 
 **Api:** [here](https://raw.githubusercontent.com/princessbleach/Zoe-GPs-Writeup/refs/heads/main/Images/SoundUploadDemonstration.gif)
 
